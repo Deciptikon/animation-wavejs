@@ -43,8 +43,8 @@ const animParamsOrder = {
 
 let calculationWindow = null;
 
-const windowWidth = 900;
-const windowHeight = 600;
+const windowWidth = 1100;
+const windowHeight = 800;
 const windowLeft = 50;
 const windowTop = 50;
 
@@ -158,6 +158,11 @@ const animationGenerator = {
   checkCalculationComplete() {
     const checkInterval = setInterval(() => {
       try {
+        if (!calculationWindow || calculationWindow.closed) {
+          clearInterval(checkInterval);
+          alert("Ошибка! Окно не существует или было закрыто.");
+        }
+
         const calculationComplete = localStorage.getItem(
           "flag_saved_epure_wavejs"
         );
