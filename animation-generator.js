@@ -121,16 +121,22 @@ const animationGenerator = {
       `width=${windowWidth},height=${windowHeight},left=${left},top=${top}`
     );
 
-    this.checkCalculationComplete(calculationWindow);
+    setTimeout(() => {
+      if (calculationWindow && !calculationWindow.closed) {
+        this.checkCalculationComplete(calculationWindow);
+      } else {
+        alert("Ошибка открытия окна");
+      }
+    }, 200);
   },
 
   checkCalculationComplete(calculationWindow) {
     const checkInterval = setInterval(() => {
       try {
-        //if (calculationWindow.closed) {
-        //  clearInterval(checkInterval);
-        //  return;
-        //}
+        if (!calculationWindow || calculationWindow.closed) {
+          clearInterval(checkInterval);
+          this.frameComplete();
+        }
 
         const calculationComplete = localStorage.getItem(
           "flag_saved_epure_wavejs"
@@ -162,6 +168,8 @@ const animationGenerator = {
       } else {
         this.generateAnimationFrames();
       }
+    } else {
+      console.log("Эпюра отсутствует");
     }
   },
 
