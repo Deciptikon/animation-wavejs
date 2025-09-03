@@ -10,10 +10,34 @@ const animationExporter = {
     }
 
     try {
-      const delay = Math.round(1000 / this.fps);
+      const delay = 1 / this.fps;
 
-      // создать гиф здесь
-      alert("Экспорт анимации пока не реализован");
+      const options = {
+        images: animationPlayer.frames,
+        gifWidth: this.width,
+        gifHeight: this.height,
+        interval: delay, // секунды между кадрами
+        numFrames: images.length,
+        frameDuration: 1,
+        fontWeight: "normal",
+        fontSize: "16px",
+        sampleInterval: 10,
+        numWorkers: 2,
+      };
+
+      gifshot.createGIF(options, function (obj) {
+        if (!obj.error) {
+          const gifUrl = obj.image;
+          //document.getElementById("result").src = gifUrl;
+          // Скачивание
+          const link = document.createElement("a");
+          link.href = gifUrl;
+          link.download = `animation.gif`;
+          link.click();
+        } else {
+          console.error("Error:", obj.error);
+        }
+      });
     } catch (error) {
       console.error("Ошибка при создании GIF:", error);
       alert("Произошла ошибка при создании GIF файла");
