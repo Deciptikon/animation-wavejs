@@ -51,6 +51,9 @@ const animationPlayer = {
     if (this.isPlaying || this.frames.length === 0) return;
 
     this.currentFrameIndex = (this.currentFrameIndex - 1) % this.frames.length;
+    if (this.currentFrameIndex < 0) {
+      this.currentFrameIndex += this.frames.length;
+    }
     this.showFrame(this.currentFrameIndex);
   },
 
