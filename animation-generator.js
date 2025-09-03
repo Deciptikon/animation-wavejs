@@ -180,7 +180,10 @@ const animationGenerator = {
   },
 
   updateProgress() {
-    const progress = (this.currentFrame / this.totalFrames) * 100;
+    const progress =
+      this.currentFrame > this.totalFrames
+        ? 100
+        : (this.currentFrame / this.totalFrames) * 100;
     const progressFill = document.querySelector(".progress-fill");
     const progressText = document.querySelector(".progress-text");
 
