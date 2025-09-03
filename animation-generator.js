@@ -210,8 +210,8 @@ const animationGenerator = {
   generationComplete() {
     this.isGenerating = false;
     calculationWindow.close();
-    console.log("Генерация завершена!", this.frames);
-    alert("Генерация завершена");
+    //console.log("Генерация завершена!", this.frames);
+    //alert("Генерация завершена");
 
     // Показываем контейнер с анимацией
     document.getElementById("animation-container").style.display = "block";
