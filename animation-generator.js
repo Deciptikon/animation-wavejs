@@ -95,7 +95,7 @@ const animationGenerator = {
 
     console.log(`this.currentFrame = ${this.currentFrame}`);
 
-    const progress = this.currentFrame / this.totalFrames;
+    const progress = this.currentFrame / (this.totalFrames + 1);
     let frameParams = [];
 
     for (let j = 0; j < this.startParams.length; j++) {
@@ -104,7 +104,7 @@ const animationGenerator = {
 
       const val = valS + (valE - valS) * progress;
 
-      frameParams.push(`${val}`);
+      frameParams.push(this.num(val));
     }
 
     console.log(`frameParams = ${frameParams}`);
