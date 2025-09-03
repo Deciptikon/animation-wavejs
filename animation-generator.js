@@ -44,8 +44,8 @@ const animParamsOrder = {
 let calculationWindow = null;
 
 const windowWidth = 1100;
-const windowHeight = 800;
-const windowLeft = 50;
+const windowHeight = 700;
+const windowLeft = (screen.width - windowWidth) / 2;
 const windowTop = 50;
 
 const windowFeatures = [
@@ -215,6 +215,7 @@ const animationGenerator = {
     progressText.textContent = `${Math.round(progress)}% (${
       this.currentFrame
     }/${this.totalFrames})`;
+    this.scrollToBottom();
   },
 
   generationComplete() {
@@ -231,6 +232,8 @@ const animationGenerator = {
     animationPlayer.fps = Number(this.animParams[animParamsOrder.fps]) || 10;
     animationPlayer.width = Number(this.animParams[animParamsOrder.width]);
     animationPlayer.height = Number(this.animParams[animParamsOrder.height]);
+
+    this.scrollToBottom();
   },
 
   urlFromData(baseURL, data) {
@@ -391,5 +394,12 @@ const animationGenerator = {
     data.Psi = this.num(Math.max(psi, 0.00001));
 
     return data;
+  },
+
+  scrollToBottom() {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
   },
 };
