@@ -144,9 +144,11 @@
         <h3>Результат анимации</h3>
         <canvas id="animation-canvas"></canvas>
         <div class="animation-buttons">
+          <button onclick="animationPlayer.stepPrev()">-</button>
           <button onclick="animationPlayer.play()">Воспроизвести</button>
           <button onclick="animationPlayer.stop()">Остановить</button>
           <button onclick="animationExporter.exportGIF()">Сохранить GIF</button>
+          <button onclick="animationPlayer.stepNext()">+</button>
         </div>
       </div>
     </div>

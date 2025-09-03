@@ -40,6 +40,20 @@ const animationPlayer = {
     }, 1000 / this.fps);
   },
 
+  stepNext() {
+    if (this.isPlaying || this.frames.length === 0) return;
+
+    this.currentFrameIndex = (this.currentFrameIndex + 1) % this.frames.length;
+    this.showFrame(this.currentFrameIndex);
+  },
+
+  stepPrev() {
+    if (this.isPlaying || this.frames.length === 0) return;
+
+    this.currentFrameIndex = (this.currentFrameIndex - 1) % this.frames.length;
+    this.showFrame(this.currentFrameIndex);
+  },
+
   stop() {
     this.isPlaying = false;
     if (this.animationInterval) {
