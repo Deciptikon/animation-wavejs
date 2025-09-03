@@ -193,14 +193,15 @@ const animationGenerator = {
   },
 
   updateProgress() {
-    const progress = ((this.currentFrame - 1) / this.totalFrames) * 100;
+    const f = this.currentFrame === 0 ? 0 : this.currentFrame - 1;
+    const progress = (f / this.totalFrames) * 100;
     const progressFill = document.querySelector(".progress-fill");
     const progressText = document.querySelector(".progress-text");
 
     progressFill.style.width = `${progress}%`;
-    progressText.textContent = `${Math.round(progress)}% (${
-      this.currentFrame - 1
-    }/${this.totalFrames})`;
+    progressText.textContent = `${Math.round(progress)}% (${f}/${
+      this.totalFrames
+    })`;
     this.scrollToBottom();
   },
 
