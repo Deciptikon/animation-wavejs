@@ -233,6 +233,11 @@ const animationGenerator = {
     animationPlayer.width = Number(this.animParams[animParamsOrder.width]);
     animationPlayer.height = Number(this.animParams[animParamsOrder.height]);
 
+    // Передаём данные для генерации анимации
+    animationExporter.fps = animationPlayer.fps;
+    animationExporter.width = animationPlayer.width;
+    animationExporter.height = animationPlayer.height;
+
     this.scrollToBottom();
   },
 
