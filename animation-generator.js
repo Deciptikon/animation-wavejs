@@ -194,6 +194,7 @@ const animationGenerator = {
   updateProgress() {
     const f = this.currentFrame;
     const t = this.totalFrames;
+    console.log(`currentFrame=${f}  |  totalFrames=${t}`);
     const p = (f / t) * 100;
     const progressFill = document.querySelector(".progress-fill");
     const progressText = document.querySelector(".progress-text");
