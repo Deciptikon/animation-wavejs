@@ -194,6 +194,7 @@ const animationGenerator = {
 
     progressFill.style.width = `${0}%`;
     progressText.textContent = `--  (--/--)`;
+    this.scrollToBottom();
   },
 
   updateProgress() {

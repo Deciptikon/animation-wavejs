@@ -1,8 +1,6 @@
-const GIF = require("./gif");
-
 const animationExporter = {
   fps: 10,
-  width: 640, // используйте реальные размеры
+  width: 640,
   height: 480,
 
   async exportGIF() {
@@ -16,71 +14,98 @@ const animationExporter = {
     try {
       const delay = Math.round(1000 / this.fps);
 
-      // Вариант 1: без воркеров (работает везде)
-      const gif = new GIF({
-        workers: 0,
-        quality: 10,
-        width: this.width,
-        height: this.height,
-      });
-
-      // Вариант 2: с локальным воркером (нужен файл gif.worker.js)
-      /*
+      // Создаем экземпляр GIF
       const gif = new GIF({
         workers: 2,
         quality: 10,
         width: this.width,
         height: this.height,
-        workerScript: 'gif.worker.js'
+        workerScript: "gif.worker.js", // убедитесь, что файл в той же папке
       });
-      */
 
-      for (let i = 0; i < animationPlayer.frames.length; i++) {
-        if (animationPlayer.frames[i]) {
-          await this.addFrameToGIF(gif, animationPlayer.frames[i], delay);
-        }
-      }
+      // Создаем промисы для загрузки всех изображений
+      const framePromises = animationPlayer.frames
+        .filter((frame) => frame)
+        .map((imageData, index) =>
+          this.addFrameToGIF(gif, imageData, delay, index)
+        );
 
+      // Ждем загрузки всех кадров
+      await Promise.all(framePromises);
+
+      // Рендерим GIF
+      gif.render();
+
+      // Обрабатываем результат
       gif.on("finished", (blob) => {
         this.downloadGIF(blob);
         alert("GIF успешно создан и сохранен!");
       });
 
-      gif.render();
+      gif.on("abort", () => {
+        alert("Создание GIF прервано");
+      });
     } catch (error) {
       console.error("Ошибка при создании GIF:", error);
-      alert("Произошла ошибка при создании GIF файла");
+      alert("Произошла ошибка при создании GIF файла: " + error.message);
     }
   },
 
-  async addFrameToGIF(gif, imageData, delay) {
-    return new Promise((resolve) => {
+  async addFrameToGIF(gif, imageData, delay, index) {
+    return new Promise((resolve, reject) => {
       const img = new Image();
-      img.onload = function () {
-        const canvas = document.createElement("canvas");
-        canvas.width = animationExporter.width;
-        canvas.height = animationExporter.height;
-        const ctx = canvas.getContext("2d");
 
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-        gif.addFrame(ctx, { copy: true, delay: delay });
-        resolve();
+      img.onload = function () {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = animationExporter.width;
+          canvas.height = animationExporter.height;
+          const ctx = canvas.getContext("2d");
+
+          // Очищаем canvas и рисуем изображение
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+          // Добавляем кадр в GIF
+          gif.addFrame(canvas, { delay: delay });
+          console.log(`Добавлен кадр ${index + 1}`);
+
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
       };
+
+      img.onerror = function () {
+        reject(
+          new Error(`Не удалось загрузить изображение для кадра ${index + 1}`)
+        );
+      };
+
       img.src = imageData;
     });
   },
 
   downloadGIF(blob) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `Анимация_эпюры_${new Date()
-      .toISOString()
-      .slice(0, 19)
-      .replace(/:/g, "-")}.gif`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    try {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Анимация_эпюры_${new Date()
+        .toISOString()
+        .slice(0, 19)
+        .replace(/:/g, "-")}.gif`;
+      document.body.appendChild(a);
+      a.click();
+
+      // Небольшая задержка перед очисткой
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 100);
+    } catch (error) {
+      console.error("Ошибка при скачивании GIF:", error);
+      alert("Ошибка при сохранении файла");
+    }
   },
 };
