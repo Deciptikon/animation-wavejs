@@ -12,7 +12,7 @@ const animationExporter = {
     // Показываем alert о начале процесса
     alert("Начинаем создание GIF... Это может занять несколько секунд");
 
-    const delay = Math.round(1000 / fps);
+    const delay = Math.round(1000 / this.fps);
 
     try {
       // Создаем GIF

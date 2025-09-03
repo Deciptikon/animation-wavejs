@@ -44,7 +44,7 @@ const animParamsOrder = {
 let calculationWindow = null;
 
 const windowWidth = 1100;
-const windowHeight = 700;
+const windowHeight = screen.height - 300;
 const windowLeft = (screen.width - windowWidth) / 2;
 const windowTop = 50;
 
@@ -53,17 +53,6 @@ const windowFeatures = [
   `height=${windowHeight}`,
   `left=${windowLeft}`,
   `top=${windowTop}`,
-  "alwaysRaised=yes", // Всегда поверх других окон
-  "dependent=yes", // Зависимое окно (закрывается с родительским)
-  "minimizable=no", // Нельзя минимизировать
-  "maximizable=no", // Нельзя максимизировать
-  "resizable=no", // Нельзя изменять размер
-  "scrollbars=no", // Без полос прокрутки
-  "status=no", // Без строки статуса
-  "titlebar=no", // Без заголовка (не везде работает)
-  "menubar=no", // Без меню
-  "toolbar=no", // Без панели инструментов
-  "location=no", // Без адресной строки
 ].join(",");
 
 const animationGenerator = {
