@@ -2,44 +2,154 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <title>Просмотр эпюры из localStorage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Генератор анимации эпюр</title>
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <canvas id="epureCanvas" width="600" height="400"></canvas>
+    <div class="container">
+      <header>
+        <h1>Аниматор эпюр</h1>
+        <p>
+          Добавьте начальные и конечные данные в таблицы, а так же укажите
+          параметры анимации, сайт сгенерирует анимацию на основе линейной
+          интерполяции указанных параметров.
+        </p>
+      </header>
 
-    <script>
-      const canvas = document.getElementById("epureCanvas");
-      const ctx = canvas.getContext("2d");
+      <!-- Таблица 1: Начальные параметры -->
+      <div class="table-section">
+        <h2>Начальные параметры</h2>
+        <table id="start-params-table">
+          <thead>
+            <tr>
+              <th>s<br />Подача<br />(мм/об)</th>
+              <th>A<br />Амплитуда<br />(x10⁻⁵ м)</th>
+              <th>F<br />Колебания<br />(Гц)</th>
+              <th>n<br />Обороты<br />(об/с)</th>
+              <th>X0<br />(мм)</th>
+              <th>Y0<br />(мм)</th>
+              <th>Scale<br /></th>
+              <th>Alfa<br />(град)</th>
+              <th>Betta<br />(град)</th>
+              <th>Gamma<br />(град)</th>
+              <th>Ro<br />(мм)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" value="0.5" /></td>
+              <td><input type="text" value="5" /></td>
+              <td><input type="text" value="20" /></td>
+              <td><input type="text" value="20" /></td>
+              <td><input type="text" value="150" /></td>
+              <td><input type="text" value="60" /></td>
+              <td><input type="text" value="0.05" /></td>
+              <td><input type="text" value="90" /></td>
+              <td><input type="text" value="30" /></td>
+              <td><input type="text" value="0" /></td>
+              <td><input type="text" value="2" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      function loadEpure() {
-        try {
-          const imageData = localStorage.getItem("saved_epure_wavejs");
+      <!-- Таблица 2: Конечные параметры -->
+      <div class="table-section">
+        <h2>Конечные параметры</h2>
+        <table id="end-params-table">
+          <thead>
+            <tr>
+              <th>s<br />Подача<br />(мм/об)</th>
+              <th>A<br />Амплитуда<br />(x10⁻⁵ м)</th>
+              <th>F<br />Колебания<br />(Гц)</th>
+              <th>n<br />Обороты<br />(об/с)</th>
+              <th>X0<br />(мм)</th>
+              <th>Y0<br />(мм)</th>
+              <th>Scale<br /></th>
+              <th>Alfa<br />(град)</th>
+              <th>Betta<br />(град)</th>
+              <th>Gamma<br />(град)</th>
+              <th>Ro<br />(мм)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" value="0.5" /></td>
+              <td><input type="text" value="5" /></td>
+              <td><input type="text" value="40" /></td>
+              <td><input type="text" value="20" /></td>
+              <td><input type="text" value="150" /></td>
+              <td><input type="text" value="60" /></td>
+              <td><input type="text" value="0.05" /></td>
+              <td><input type="text" value="90" /></td>
+              <td><input type="text" value="30" /></td>
+              <td><input type="text" value="0" /></td>
+              <td><input type="text" value="2" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-          if (!imageData) {
-            console.log("Эпюра не найдена в localStorage");
-            return;
-          }
+      <!-- Таблица 3: Параметры анимации -->
+      <div class="table-section">
+        <h2>Параметры анимации</h2>
+        <table id="animation-params-table">
+          <thead>
+            <tr>
+              <th>Width (px)</th>
+              <th>Height (px)</th>
+              <th>Количество кадров</th>
+              <th>Кадров в секунду (FPS)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="text" value="640" /></td>
+              <td><input type="text" value="480" /></td>
+              <td><input type="text" value="20" /></td>
+              <td><input type="text" value="10" /></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-          const img = new Image();
-          img.onload = function () {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const x = (canvas.width - img.width) / 2;
-            const y = (canvas.height - img.height) / 2;
-            ctx.drawImage(img, x, y);
-          };
+      <div class="buttons">
+        <button
+          class="generate"
+          onclick="animationGenerator.generateAnimation()"
+        >
+          Сгенерировать анимацию
+        </button>
+      </div>
 
-          img.onerror = function () {
-            console.log("Ошибка загрузки изображения");
-          };
+      <div
+        id="progress-container"
+        class="progress-container"
+        style="display: none"
+      >
+        <h3>Прогресс генерации</h3>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-text">0%</div>
+      </div>
 
-          img.src = imageData;
-        } catch (error) {
-          console.error("Ошибка:", error);
-        }
-      }
+      <div
+        id="animation-container"
+        class="animation-container"
+        style="display: none"
+      >
+        <h3>Результат анимации</h3>
+        <canvas id="animation-canvas"></canvas>
+        <button onclick="animationPlayer.play()">Воспроизвести</button>
+        <button onclick="animationPlayer.stop()">Остановить</button>
+        <button onclick="animationExporter.exportGIF()">Сохранить GIF</button>
+      </div>
+    </div>
 
-      // Загружаем эпюру при открытии страницы
-      loadEpure();
-    </script>
+    <script src="animation-generator.js"></script>
+    <script src="animation-player.js"></script>
+    <script src="animation-exporter.js"></script>
   </body>
 </html>
