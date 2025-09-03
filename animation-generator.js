@@ -203,7 +203,7 @@ const animationGenerator = {
     progressFill.style.width = `${progress}%`;
     progressText.textContent = `${Math.round(progress)}% (${
       this.currentFrame
-    }/${this.totalFrames})`;
+    }/${this.totalFrames + 1})`;
     this.scrollToBottom();
   },
 
