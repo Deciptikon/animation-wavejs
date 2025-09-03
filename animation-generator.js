@@ -221,12 +221,16 @@ const animationGenerator = {
     this.isGenerating = false;
     calculationWindow.close();
     console.log("Генерация завершена!", this.frames);
+    alert("Генерация завершена");
 
     // Показываем контейнер с анимацией
     document.getElementById("animation-container").style.display = "block";
 
     // Инициализируем плеер с готовыми кадрами
     animationPlayer.init(this.frames);
+    animationPlayer.fps = Number(this.animParams[animParamsOrder.fps]) || 10;
+    animationPlayer.width = Number(this.animParams[animParamsOrder.width]);
+    animationPlayer.height = Number(this.animParams[animParamsOrder.height]);
   },
 
   urlFromData(baseURL, data) {

@@ -4,6 +4,8 @@ const animationPlayer = {
   isPlaying: false,
   animationInterval: null,
   fps: 10,
+  width: 50,
+  height: 50,
 
   init(frames) {
     this.frames = frames;
@@ -18,8 +20,8 @@ const animationPlayer = {
     if (this.frames.length > 0) {
       const img = new Image();
       img.onload = () => {
-        canvas.width = img.width;
-        canvas.height = img.height;
+        canvas.width = this.width;
+        canvas.height = this.height;
         this.showFrame(0);
       };
       img.src = this.frames[0];
@@ -30,17 +32,12 @@ const animationPlayer = {
     if (this.isPlaying || this.frames.length === 0) return;
 
     this.isPlaying = true;
-    const fps =
-      parseInt(
-        document.querySelector("#animation-params-table input:nth-child(4)")
-          .value
-      ) || 10;
 
     this.animationInterval = setInterval(() => {
       this.currentFrameIndex =
         (this.currentFrameIndex + 1) % this.frames.length;
       this.showFrame(this.currentFrameIndex);
-    }, 1000 / fps);
+    }, 1000 / this.fps);
   },
 
   stop() {
