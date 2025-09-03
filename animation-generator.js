@@ -98,8 +98,8 @@ const animationGenerator = {
     let frameParams = [];
 
     for (let j = 0; j < this.startParams.length; j++) {
-      const valS = Number(this.startParams[j]);
-      const valE = Number(this.endParams[j]);
+      const valS = Number(this.startParams[j].replaceAll(",", "."));
+      const valE = Number(this.endParams[j].replaceAll(",", "."));
 
       const val = valS + (valE - valS) * progress;
 
