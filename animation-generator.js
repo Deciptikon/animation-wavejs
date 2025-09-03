@@ -69,7 +69,7 @@ const animationGenerator = {
     this.animParams = this.getParamsFromTable("animation-params-table");
 
     this.totalFrames =
-      Number(this.animParams[animParamsOrder[`totalFrames`]]) || 30;
+      Number(this.animParams[animParamsOrder[`totalFrames`]]) - 1 || 30;
     this.frames = [];
     this.currentFrame = 0;
     this.isGenerating = true;
@@ -111,19 +111,18 @@ const animationGenerator = {
     this.generateFrame(
       frameParams,
       this.animParams[animParamsOrder.width],
-      this.animParams[animParamsOrder.height],
-      this.currentFrame
+      this.animParams[animParamsOrder.height]
     );
   },
 
-  generateFrame(params, width, height, frameIndex) {
+  generateFrame(params, width, height) {
     const data = this.paramsToData(params, width, height);
     const url = this.urlFromData(baseURL, data);
 
-    this.openCalculationWindow(url, frameIndex);
+    this.openCalculationWindow(url);
   },
 
-  openCalculationWindow(url, frameIndex) {
+  openCalculationWindow(url) {
     if (calculationWindow) {
       //меняем адресс окна
       try {
@@ -173,8 +172,8 @@ const animationGenerator = {
     const imageData = localStorage.getItem("saved_epure_wavejs");
     if (imageData) {
       this.frames[this.currentFrame] = imageData;
-      this.currentFrame++;
       this.updateProgress();
+      this.currentFrame++;
 
       if (this.currentFrame > this.totalFrames) {
         this.generationComplete();
@@ -193,15 +192,14 @@ const animationGenerator = {
   },
 
   updateProgress() {
-    const f = this.currentFrame === 0 ? 0 : this.currentFrame - 1;
-    const progress = (f / this.totalFrames) * 100;
+    const f = this.currentFrame;
+    const t = this.totalFrames;
+    const p = (f / t) * 100;
     const progressFill = document.querySelector(".progress-fill");
     const progressText = document.querySelector(".progress-text");
 
-    progressFill.style.width = `${progress}%`;
-    progressText.textContent = `${Math.round(progress)}% (${f}/${
-      this.totalFrames
-    })`;
+    progressFill.style.width = `${p}%`;
+    progressText.textContent = `${Math.round(p)}% (${f + 1}/${t + 1})`;
     this.scrollToBottom();
   },
 
