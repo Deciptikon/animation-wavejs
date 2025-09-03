@@ -1,7 +1,9 @@
+const GIF = require("./gif");
+
 const animationExporter = {
   fps: 10,
-  width: 50,
-  height: 50,
+  width: 640, // используйте реальные размеры
+  height: 480,
 
   async exportGIF() {
     if (animationPlayer.frames.length === 0) {
@@ -9,38 +11,76 @@ const animationExporter = {
       return;
     }
 
+    alert("Начинаем создание GIF... Это может занять несколько секунд");
+
     try {
-      const delay = 1 / this.fps; // секунды между кадрами
+      const delay = Math.round(1000 / this.fps);
 
-      const options = {
-        images: animationPlayer.frames,
-        gifWidth: this.width,
-        gifHeight: this.height,
-        interval: delay,
-        numFrames: animationPlayer.frames.length,
-        frameDuration: 1,
-        fontWeight: "normal",
-        fontSize: "16px",
-        sampleInterval: 10,
-        numWorkers: 2,
-      };
-
-      gifshot.createGIF(options, function (obj) {
-        if (!obj.error) {
-          const gifUrl = obj.image;
-          //document.getElementById("result").src = gifUrl;
-          // Скачивание
-          const link = document.createElement("a");
-          link.href = gifUrl;
-          link.download = `animation.gif`;
-          link.click();
-        } else {
-          console.error("Error:", obj.error);
-        }
+      // Вариант 1: без воркеров (работает везде)
+      const gif = new GIF({
+        workers: 0,
+        quality: 10,
+        width: this.width,
+        height: this.height,
       });
+
+      // Вариант 2: с локальным воркером (нужен файл gif.worker.js)
+      /*
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width: this.width,
+        height: this.height,
+        workerScript: 'gif.worker.js'
+      });
+      */
+
+      for (let i = 0; i < animationPlayer.frames.length; i++) {
+        if (animationPlayer.frames[i]) {
+          await this.addFrameToGIF(gif, animationPlayer.frames[i], delay);
+        }
+      }
+
+      gif.on("finished", (blob) => {
+        this.downloadGIF(blob);
+        alert("GIF успешно создан и сохранен!");
+      });
+
+      gif.render();
     } catch (error) {
       console.error("Ошибка при создании GIF:", error);
       alert("Произошла ошибка при создании GIF файла");
     }
+  },
+
+  async addFrameToGIF(gif, imageData, delay) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = animationExporter.width;
+        canvas.height = animationExporter.height;
+        const ctx = canvas.getContext("2d");
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        gif.addFrame(ctx, { copy: true, delay: delay });
+        resolve();
+      };
+      img.src = imageData;
+    });
+  },
+
+  downloadGIF(blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Анимация_эпюры_${new Date()
+      .toISOString()
+      .slice(0, 19)
+      .replace(/:/g, "-")}.gif`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   },
 };
