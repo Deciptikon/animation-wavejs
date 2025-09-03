@@ -193,17 +193,14 @@ const animationGenerator = {
   },
 
   updateProgress() {
-    const progress =
-      this.currentFrame > this.totalFrames
-        ? 100
-        : (this.currentFrame / this.totalFrames) * 100;
+    const progress = ((this.currentFrame - 1) / this.totalFrames) * 100;
     const progressFill = document.querySelector(".progress-fill");
     const progressText = document.querySelector(".progress-text");
 
     progressFill.style.width = `${progress}%`;
     progressText.textContent = `${Math.round(progress)}% (${
-      this.currentFrame
-    }/${this.totalFrames + 1})`;
+      this.currentFrame - 1
+    }/${this.totalFrames})`;
     this.scrollToBottom();
   },
 
@@ -227,7 +224,9 @@ const animationGenerator = {
     animationExporter.width = animationPlayer.width;
     animationExporter.height = animationPlayer.height;
 
-    this.scrollToBottom();
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 200);
   },
 
   urlFromData(baseURL, data) {
