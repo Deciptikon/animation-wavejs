@@ -121,16 +121,16 @@ const animationGenerator = {
       `width=${windowWidth},height=${windowHeight},left=${left},top=${top}`
     );
 
-    this.checkCalculationComplete(calculationWindow, frameIndex);
+    this.checkCalculationComplete(calculationWindow);
   },
 
-  checkCalculationComplete(calculationWindow, frameIndex) {
+  checkCalculationComplete(calculationWindow) {
     const checkInterval = setInterval(() => {
       try {
-        if (calculationWindow.closed) {
-          clearInterval(checkInterval);
-          return;
-        }
+        //if (calculationWindow.closed) {
+        //  clearInterval(checkInterval);
+        //  return;
+        //}
 
         const calculationComplete = localStorage.getItem(
           "flag_saved_epure_wavejs"
@@ -142,18 +142,18 @@ const animationGenerator = {
           clearInterval(checkInterval);
           localStorage.removeItem("flag_saved_epure_wavejs");
 
-          this.frameComplete(frameIndex);
+          this.frameComplete();
         }
       } catch (error) {
-        console.log("Ожидание завершения расчета...");
+        console.log("Ожидание завершения расчета...", error);
       }
-    }, 500);
+    }, 1000);
   },
 
-  frameComplete(frameIndex) {
+  frameComplete() {
     const imageData = localStorage.getItem("saved_epure_wavejs");
     if (imageData) {
-      this.frames[frameIndex] = imageData;
+      this.frames[this.currentFrame] = imageData;
       this.currentFrame++;
       this.updateProgress();
 
