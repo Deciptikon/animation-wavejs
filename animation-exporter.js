@@ -21,8 +21,6 @@ const animationExporter = {
         quality: 10,
         width: this.width,
         height: this.height,
-        workerScript:
-          "https://cdnjs.cloudflare.com/ajax/libs/gif.js/0.2.0/gif.worker.js",
       });
 
       // Добавляем кадры в GIF
