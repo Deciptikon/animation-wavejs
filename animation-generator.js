@@ -92,6 +92,8 @@ const animationGenerator = {
       frameParams.push(`${val}`);
     }
 
+    console.log(`frameParams = ${frameParams}`);
+
     this.generateFrame(
       frameParams,
       this.animParams[animParamsOrder.width],
