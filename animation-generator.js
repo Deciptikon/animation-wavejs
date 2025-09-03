@@ -69,7 +69,7 @@ const animationGenerator = {
     this.animParams = this.getParamsFromTable("animation-params-table");
 
     this.totalFrames =
-      Number(this.animParams[animParamsOrder[`totalFrames`]]) - 1 || 30;
+      Number(this.animParams[animParamsOrder[`totalFrames`]]) || 30;
     this.frames = [];
     this.currentFrame = 0;
     this.isGenerating = true;
@@ -95,7 +95,7 @@ const animationGenerator = {
 
     console.log(`this.currentFrame = ${this.currentFrame}`);
 
-    const progress = this.currentFrame / (this.totalFrames + 1);
+    const progress = this.currentFrame / this.totalFrames;
     let frameParams = [];
 
     for (let j = 0; j < this.startParams.length; j++) {
@@ -193,12 +193,12 @@ const animationGenerator = {
     const progressText = document.querySelector(".progress-text");
 
     progressFill.style.width = `${0}%`;
-    progressText.textContent = `${0}% (${0}/${this.totalFrames + 1})`;
+    progressText.textContent = `--  (--/--)`;
   },
 
   updateProgress() {
-    const f = this.currentFrame + 1;
-    const t = this.totalFrames + 1;
+    const f = this.currentFrame;
+    const t = this.totalFrames;
     console.log(`currentFrame=${f}  |  totalFrames=${t}`);
     const p = (f / t) * 100;
     const progressFill = document.querySelector(".progress-fill");
