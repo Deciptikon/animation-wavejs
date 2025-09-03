@@ -10,14 +10,14 @@ const animationExporter = {
     }
 
     try {
-      const delay = 1 / this.fps;
+      const delay = 1 / this.fps; // секунды между кадрами
 
       const options = {
         images: animationPlayer.frames,
         gifWidth: this.width,
         gifHeight: this.height,
-        interval: delay, // секунды между кадрами
-        numFrames: images.length,
+        interval: delay,
+        numFrames: animationPlayer.frames.length,
         frameDuration: 1,
         fontWeight: "normal",
         fontSize: "16px",

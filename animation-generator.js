@@ -75,6 +75,7 @@ const animationGenerator = {
     this.isGenerating = true;
 
     this.showProgress();
+    this.scrollToBottom();
     this.generateAnimationFrames();
   },
 
@@ -188,19 +189,23 @@ const animationGenerator = {
   showProgress() {
     const container = document.getElementById("progress-container");
     container.style.display = "block";
-    this.updateProgress();
+    const progressFill = document.querySelector(".progress-fill");
+    const progressText = document.querySelector(".progress-text");
+
+    progressFill.style.width = `${0}%`;
+    progressText.textContent = `${0}% (${0}/${this.totalFrames + 1})`;
   },
 
   updateProgress() {
-    const f = this.currentFrame;
-    const t = this.totalFrames;
+    const f = this.currentFrame + 1;
+    const t = this.totalFrames + 1;
     console.log(`currentFrame=${f}  |  totalFrames=${t}`);
     const p = (f / t) * 100;
     const progressFill = document.querySelector(".progress-fill");
     const progressText = document.querySelector(".progress-text");
 
     progressFill.style.width = `${p}%`;
-    progressText.textContent = `${Math.round(p)}% (${f + 1}/${t + 1})`;
+    progressText.textContent = `${Math.round(p)}% (${f}/${t})`;
     this.scrollToBottom();
   },
 
