@@ -41,6 +41,31 @@ const animParamsOrder = {
   fps: 3,
 };
 
+let calculationWindow = null;
+
+const windowWidth = 900;
+const windowHeight = 600;
+const windowLeft = 50;
+const windowTop = 50;
+
+const windowFeatures = [
+  `width=${windowWidth}`,
+  `height=${windowHeight}`,
+  `left=${windowLeft}`,
+  `top=${windowTop}`,
+  "alwaysRaised=yes", // Всегда поверх других окон
+  "dependent=yes", // Зависимое окно (закрывается с родительским)
+  "minimizable=no", // Нельзя минимизировать
+  "maximizable=no", // Нельзя максимизировать
+  "resizable=no", // Нельзя изменять размер
+  "scrollbars=no", // Без полос прокрутки
+  "status=no", // Без строки статуса
+  "titlebar=no", // Без заголовка (не везде работает)
+  "menubar=no", // Без меню
+  "toolbar=no", // Без панели инструментов
+  "location=no", // Без адресной строки
+].join(",");
+
 const animationGenerator = {
   frames: [],
   currentFrame: 0,
@@ -110,41 +135,35 @@ const animationGenerator = {
   },
 
   openCalculationWindow(url, frameIndex) {
-    const windowWidth = 900;
-    const windowHeight = 600;
-    const left = (screen.width - windowWidth) / 2;
-    const top = (screen.height - windowHeight) / 2;
-
-    const calculationWindow = window.open(
-      url,
-      `frameWindow_${frameIndex}`,
-      `width=${windowWidth},height=${windowHeight},left=${left},top=${top}`
-    );
+    if (calculationWindow) {
+      //меняем адресс окна
+      try {
+        calculationWindow.location.href = url;
+      } catch (error) {
+        alert("Ошибка, окно не существует или было закрыто!");
+      }
+    } else {
+      calculationWindow = window.open(url, `calculationWindow`, windowFeatures);
+    }
 
     setTimeout(() => {
       if (calculationWindow && !calculationWindow.closed) {
-        this.checkCalculationComplete(calculationWindow);
+        this.checkCalculationComplete();
       } else {
-        alert("Ошибка открытия окна");
+        alert("Ошибка! Окно не существует или было закрыто.");
       }
     }, 200);
   },
 
-  checkCalculationComplete(calculationWindow) {
+  checkCalculationComplete() {
     const checkInterval = setInterval(() => {
       try {
-        if (!calculationWindow || calculationWindow.closed) {
-          clearInterval(checkInterval);
-          this.frameComplete();
-        }
-
         const calculationComplete = localStorage.getItem(
           "flag_saved_epure_wavejs"
         );
         console.log(`calculationComplete = ${calculationComplete}`);
 
         if (calculationComplete === "true") {
-          calculationWindow.close();
           clearInterval(checkInterval);
           localStorage.removeItem("flag_saved_epure_wavejs");
 
@@ -195,6 +214,7 @@ const animationGenerator = {
 
   generationComplete() {
     this.isGenerating = false;
+    calculationWindow.close();
     console.log("Генерация завершена!", this.frames);
 
     // Показываем контейнер с анимацией
