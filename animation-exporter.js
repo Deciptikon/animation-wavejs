@@ -9,13 +9,21 @@ const animationExporter = {
       return;
     }
 
-    // Показываем alert о начале процесса
     alert("Начинаем создание GIF... Это может занять несколько секунд");
 
-    const delay = Math.round(1000 / this.fps);
-
     try {
-      // Создаем GIF
+      const delay = Math.round(1000 / this.fps);
+
+      // Оборачиваем в Promise для корректной обработки
+      await this.createGIFWithFrames(delay);
+    } catch (error) {
+      console.error("Ошибка при создании GIF:", error);
+      alert("Произошла ошибка при создании GIF файла");
+    }
+  },
+
+  async createGIFWithFrames(delay) {
+    return new Promise((resolve, reject) => {
       const gif = new GIF({
         workers: 2,
         quality: 10,
@@ -23,30 +31,45 @@ const animationExporter = {
         height: this.height,
       });
 
-      // Добавляем кадры в GIF
-      for (let i = 0; i < animationPlayer.frames.length; i++) {
-        if (animationPlayer.frames[i]) {
+      // Добавляем кадры
+      let framesAdded = 0;
+      const totalFrames = animationPlayer.frames.filter(
+        (frame) => frame
+      ).length;
+
+      const addNextFrame = async () => {
+        if (framesAdded >= totalFrames) {
+          gif.render();
+          return;
+        }
+
+        if (animationPlayer.frames[framesAdded]) {
           await this.addFrameToGIF(
             gif,
-            animationPlayer.frames[i],
+            animationPlayer.frames[framesAdded],
             this.width,
             this.height,
             delay
           );
+          framesAdded++;
+          addNextFrame();
         }
-      }
+      };
 
-      // Генерируем и скачиваем GIF
-      gif.on("finished", function (blob) {
-        animationExporter.downloadGIF(blob);
+      // Обработчики событий
+      gif.on("finished", (blob) => {
+        this.downloadGIF(blob);
         alert("GIF успешно создан и сохранен!");
+        resolve();
       });
 
-      gif.render();
-    } catch (error) {
-      console.error("Ошибка при создании GIF:", error);
-      alert("Произошла ошибка при создании GIF файла");
-    }
+      gif.on("abort", () => {
+        reject(new Error("GIF creation aborted"));
+      });
+
+      // Начинаем добавление кадров
+      addNextFrame();
+    });
   },
 
   async addFrameToGIF(gif, imageData, width, height, delay) {
@@ -60,7 +83,6 @@ const animationExporter = {
 
         ctx.drawImage(img, 0, 0, width, height);
         gif.addFrame(ctx, { copy: true, delay: delay });
-
         resolve();
       };
       img.src = imageData;
