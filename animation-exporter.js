@@ -60,7 +60,7 @@ const animationExporter = {
           const canvas = document.createElement("canvas");
           canvas.width = animationExporter.width;
           canvas.height = animationExporter.height;
-          const ctx = canvas.getContext("2d");
+          const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
           // Очищаем canvas и рисуем изображение
           ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -91,7 +91,7 @@ const animationExporter = {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `Анимация_эпюры_${new Date()
+      a.download = `Динамика_эпюры_${new Date()
         .toISOString()
         .slice(0, 19)
         .replace(/:/g, "-")}.gif`;

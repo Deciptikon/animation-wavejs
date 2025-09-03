@@ -88,13 +88,6 @@ const animationGenerator = {
   },
 
   generateAnimationFrames() {
-    console.log("generateAnimationFrames __________________________");
-    console.log(`startParams = ${this.startParams}`);
-    console.log(`endParams = ${this.endParams}`);
-    console.log(`animParams = ${this.animParams}`);
-
-    console.log(`this.currentFrame = ${this.currentFrame}`);
-
     const progress = this.currentFrame / this.totalFrames;
     let frameParams = [];
 
@@ -106,8 +99,6 @@ const animationGenerator = {
 
       frameParams.push(this.num(val));
     }
-
-    console.log(`frameParams = ${frameParams}`);
 
     this.generateFrame(
       frameParams,
@@ -155,7 +146,6 @@ const animationGenerator = {
         const calculationComplete = localStorage.getItem(
           "flag_saved_epure_wavejs"
         );
-        console.log(`calculationComplete = ${calculationComplete}`);
 
         if (calculationComplete === "true") {
           clearInterval(checkInterval);
@@ -200,7 +190,6 @@ const animationGenerator = {
   updateProgress() {
     const f = this.currentFrame;
     const t = this.totalFrames;
-    console.log(`currentFrame=${f}  |  totalFrames=${t}`);
     const p = (f / t) * 100;
     const progressFill = document.querySelector(".progress-fill");
     const progressText = document.querySelector(".progress-text");
@@ -213,8 +202,6 @@ const animationGenerator = {
   generationComplete() {
     this.isGenerating = false;
     calculationWindow.close();
-    //console.log("Генерация завершена!", this.frames);
-    //alert("Генерация завершена");
 
     // Показываем контейнер с анимацией
     document.getElementById("animation-container").style.display = "block";
