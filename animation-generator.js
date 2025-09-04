@@ -82,7 +82,6 @@ const animationGenerator = {
   getParamsFromTable(tableId) {
     const inputs = document.querySelectorAll(`#${tableId} input`);
     const params = Array.from(inputs).map((input) => input.value);
-    console.log(params);
 
     return params;
   },

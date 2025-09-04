@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Генератор анимации эпюр</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=1.0.1" />
     <link rel="icon" type="image/png" href="./favicon.png" />
   </head>
   <body>
@@ -146,18 +146,17 @@
         <h3>Результат анимации</h3>
         <canvas id="animation-canvas"></canvas>
         <div class="animation-buttons">
-          <button onclick="animationPlayer.play()">Воспроизвести</button>
-          <button onclick="animationPlayer.stop()">Остановить</button>
-          <button onclick="animationExporter.exportGIF()">Сохранить GIF</button>
-          <button onclick="animationPlayer.stepPrev()">Шаг назад</button>
-          <button onclick="animationPlayer.stepNext()">Шаг вперёд</button>
+          <button onclick="animationPlayer.playstop()">▶️/⏹️</button>
+          <button onclick="animationExporter.exportGIF()">💾</button>
+          <button onclick="animationPlayer.stepPrev()">↩️</button>
+          <button onclick="animationPlayer.stepNext()">↪️</button>
         </div>
       </div>
     </div>
 
     <script src="gif.js?v=1.0.1"></script>
-    <script src="animation-generator.js?v=1.0.2"></script>
-    <script src="animation-player.js?v=1.0.1"></script>
+    <script src="animation-generator.js?v=1.0.3"></script>
+    <script src="animation-player.js?v=1.0.2"></script>
     <script src="animation-exporter.js?v=1.0.2"></script>
   </body>
 </html>

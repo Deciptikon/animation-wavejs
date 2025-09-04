@@ -28,6 +28,14 @@ const animationPlayer = {
     }
   },
 
+  playstop() {
+    if (this.isPlaying) {
+      this.stop();
+    } else {
+      this.play();
+    }
+  },
+
   play() {
     if (this.isPlaying || this.frames.length === 0) return;
 
